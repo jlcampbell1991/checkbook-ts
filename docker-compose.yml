@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  postgres:
+    image: "postgres:9.6-alpine"
+    container_name: checkbook-pg
+    volumes:
+      - checkbook-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  api:
+    build: ./api
+    container_name: checkbook-api
+    ports:
+      - 3000:3000
+    links:
+      - postgres
+    environment:
+      - PORT=3000
+  
+  ui:
+    build: ./ui/checkbook-ui
+    container_name: checkbook-ui
+    ports:
+      - 3001:3001
+    links:
+      - api
+    
+volumes:
+  checkbook-data:
